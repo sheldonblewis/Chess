@@ -3,21 +3,24 @@
 
 #include "board.h"
 #include "player.h"
+#include <string>
+#include <memory>
 
 class Game {
 private:
     Board board;
-    Player* whitePlayer;
-    Player* blackPlayer;
+    std::unique_ptr<Player> whitePlayer;
+    std::unique_ptr<Player> blackPlayer;
+    Player* currentPlayer;
 
 public:
-    Game(Player* white, Player* black);
+    Game(std::unique_ptr<Player> white, std::unique_ptr<Player> black);
     void startGame();
-    void resign(Player* player);
-    void move(Coordinate start, Coordinate end);
-    void setup();
-    void enterSetupMode();
-    void exitSetupMode();
+    void resign(std::unique_ptr<Player> player);
+    bool move(const std::string& input);
+    Board& getBoard();
+    Player* getCurrentPlayer();
+    void switchPlayer();
 };
 
 #endif // GAME_H

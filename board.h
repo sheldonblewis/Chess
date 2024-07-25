@@ -15,6 +15,7 @@ public:
     void placePiece(Piece* piece, Coordinate position);
     void removePiece(Coordinate position);
     bool validateMove(Coordinate start, Coordinate end) const;
+    void movePiece(Coordinate start, Coordinate end);
     bool isCheck() const;
     bool isCheckmate() const;
     bool isStalemate() const;

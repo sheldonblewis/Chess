@@ -19,7 +19,7 @@ public:
     void resign(Player* player);
     bool move(const std::string& input);
     Board& getBoard();
-    Player* getCurrentPlayer();
+    Player* getCurrentPlayer() const;
     void switchPlayer();
 };
 

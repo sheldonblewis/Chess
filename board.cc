@@ -68,10 +68,13 @@ void Board::removePiece(Coordinate position) {
     squares[position.getX()][position.getY()].removePiece();
 }
 
-bool Board::validateMove(Coordinate start, Coordinate end, const Board& board) const {
+bool Board::validateMove(Coordinate start, Coordinate end, char currColor, const Board& board) const {
     // move validation logic
     Piece* p = squares[start.getX()][start.getY()].getPiece();
-    return p && p->validateMove(start, end, board);
+    if (p->getColor() != currColor) {
+        return false; // trying to move opponent's piece or no piece at all
+    }
+    return p->validateMove(start, end, board);
 }
 
 void Board::movePiece(Coordinate start, Coordinate end) {
@@ -122,18 +125,20 @@ bool Board::isCheck(char color) const {
 }
 
 bool Board::isCheckmate(char color) const {
-    // confirm current player's king is in check
+    char otherColor = color == 'W' ? 'B' : 'W';
+    
+    // confirm opponent's king is in check
     if (!isCheck(color)) {
         return false;
     }
 
-    // iterate through all of current player's pieces
+    // iterate through all of opponent's pieces
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
             if (squares[i][j].isOccupied()) {
                 Piece* piece = squares[i][j].getPiece();
-                if (piece->getColor() == color) {
-                    // try moving each piece to all possible positions on the board
+                if (piece->getColor() == otherColor) {
+                    // try moving each opponent piece to all possible positions on the board
                     for (int x = 0; x < 8; ++x) {
                         for (int y = 0; y < 8; ++y) {
                             Coordinate start(i, j);
@@ -146,7 +151,7 @@ bool Board::isCheckmate(char color) const {
                                 tempBoard.movePiece(start, end);
 
                                 if (!tempBoard.isCheck(color)) {
-                                    return false; // King is no longer in check
+                                    return false; // King is no longer in check 
                                 }
                             }
                         }
@@ -161,7 +166,9 @@ bool Board::isCheckmate(char color) const {
 }
 
 bool Board::isStalemate(char color) const {
-    // confirm current player's king is not in check
+    char otherColor = color == 'W' ? 'B' : 'W';
+
+    // confirm opponent's king is not in check
     if (isCheck(color)) {
         return false;
     }
@@ -171,7 +178,7 @@ bool Board::isStalemate(char color) const {
         for (int j = 0; j < 8; ++j) {
             if (squares[i][j].isOccupied()) {
                 Piece* piece = squares[i][j].getPiece();
-                if (piece->getColor() == color) {
+                if (piece->getColor() == otherColor) {
                     // try moving each piece to all possible positions on the board
                     for (int x = 0; x < 8; ++x) {
                         for (int y = 0; y < 8; ++y) {

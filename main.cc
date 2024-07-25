@@ -13,24 +13,38 @@ int main() {
     std::string input;
     while (true) {
         game.getBoard().display();
-        std::cout << (game.getCurrentPlayer()->getColor() == 'W' ? "White" : "Black") << "'s turn: ";
+        std::cout << "\n" << (game.getCurrentPlayer()->getColor() == 'W' ? "White" : "Black") << "'s turn: ";
         std::getline(std::cin, input);
         if (input == "resign") {
             game.resign(game.getCurrentPlayer());
             break;
         }
         if (!game.move(input)) {
-            std::cout << "Invalid move. Try again." << std::endl;
-            continue; // if invalid, allow another input
+            continue; // if invalid, input again
         }
-        if (game.getBoard().isCheckmate(game.getCurrentPlayer()->getColor())) {
-            std::cout << "Checkmate! " << (game.getCurrentPlayer()->getColor() == 'W' ? "Black" : "White") << " wins!" << std::endl;
+        
+        std::cout << std::endl;
+
+        // check for check, checkmate, stalemate
+        Board& board = game.getBoard();
+        char currColor = game.getCurrentPlayer()->getColor();
+        if (board.isCheck(currColor)) {
+            std::cout << (currColor == 'W' ? "Black" : "White") << " is in check." << std::endl;
+
+            if (board.isCheckmate(currColor)) {
+                std::cout << "Checkmate! " << (currColor == 'W' ? "Black" : "White") << " wins!\n" << std::endl;
+                game.getBoard().display();
+                break;
+            } else {
+                std::cout << std::endl;
+            }
+        }
+        else if (board.isStalemate(currColor)) {
+            std::cout << "Stalemate!\n" << std::endl;
+            game.getBoard().display();
             break;
         }
-        if (game.getBoard().isStalemate(game.getCurrentPlayer()->getColor())) {
-            std::cout << "Stalemate! The game is a draw." << std::endl;
-            break;
-        }
+
         game.switchPlayer();
     }
 

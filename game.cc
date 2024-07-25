@@ -7,11 +7,10 @@ Game::Game(std::unique_ptr<Player> white, std::unique_ptr<Player> black) : white
 
 void Game::startGame() {
     // begin game
-    std::cout << "Game started. White goes first." << std::endl;
+    std::cout << "\nGame started. White goes first.\n" << std::endl;
 }
 
 void Game::resign(Player* player) {
-    std::cout << (player->getColor() == 'W' ? "White" : "Black") << " resigns." << std::endl;
     std::cout << (player->getColor() == 'W' ? "Black" : "White") << " wins!" << std::endl;
 }
 
@@ -39,11 +38,34 @@ bool Game::move(const std::string& input) {
     Coordinate startCoord(startX, startY);
     Coordinate endCoord(endX, endY);
 
-    if (board.validateMove(startCoord, endCoord, board)) {
+    // validate and execute move
+    if (board.validateMove(startCoord, endCoord, getCurrentPlayer()->getColor(), board)) {
+        // checks if already in check
+        bool inCheck = false;
+        if (board.isCheck(getCurrentPlayer()->getColor())) {
+            inCheck = true;
+        }
+
+        //simulate move
+        Board tempBoard = board;
+        tempBoard.movePiece(startCoord, endCoord);
+
+        // check if the move puts or keeps in the current player in check
+        char otherColor = getCurrentPlayer()->getColor() == 'W' ? 'B' : 'W';
+        if (tempBoard.isCheck(otherColor)) {
+            if (inCheck) {
+                std::cout << "Still in check. Try again.\n" << std::endl;
+            } else {
+            std::cout << "This move puts you in check. Try again.\n" << std::endl;
+            }
+            return false;
+        }
+        std::cout << "valid move" << std::endl; // DEBUG
+        // execute
         board.movePiece(startCoord, endCoord);
         return true;
     } else {
-        std::cout << "Invalid move. Try again." << std::endl;
+        std::cout << "Invalid Move. Try again.\n" << std::endl;
         return false;
     }
 }
@@ -52,7 +74,7 @@ Board& Game::getBoard() {
     return board;
 }
 
-Player* Game::getCurrentPlayer() {
+Player* Game::getCurrentPlayer() const {
     return currentPlayer;
 }
 

@@ -15,7 +15,7 @@ public:
     void display() const;
     void placePiece(Piece* p, Coordinate position);
     void removePiece(Coordinate position);
-    bool validateMove(Coordinate start, Coordinate end, const Board& board) const;
+    bool validateMove(Coordinate start, Coordinate end, char currColor, const Board& board) const;
     void movePiece(Coordinate start, Coordinate end);
     bool isCheck(char color) const;
     bool isCheckmate(char color) const;

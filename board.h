@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include <vector>
+#include "coordinate.h"
 #include "piece.h"
 #include "square.h"
 
@@ -12,13 +13,15 @@ private:
 public:
     Board();
     void display() const;
-    void placePiece(Piece* piece, Coordinate position);
+    void placePiece(Piece* p, Coordinate position);
     void removePiece(Coordinate position);
-    bool validateMove(Coordinate start, Coordinate end) const;
+    bool validateMove(Coordinate start, Coordinate end, const Board& board) const;
     void movePiece(Coordinate start, Coordinate end);
-    bool isCheck() const;
+    bool isCheck(char color) const;
     bool isCheckmate() const;
     bool isStalemate() const;
+    Square& getSquare(Coordinate coord);
+    const Square& getSquare(Coordinate coord) const; // read-only
 };
 
 #endif // BOARD_H

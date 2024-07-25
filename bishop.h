@@ -6,7 +6,7 @@
 class Bishop : public Piece {
 public:
     Bishop(char color, Coordinate position);
-    bool validateMove(Coordinate start, Coordinate end) const override;
+    bool validateMove(Coordinate start, Coordinate end, const Board& board) const override;
     char getSymbol() const override;
 };
 

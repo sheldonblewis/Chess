@@ -1,1 +1,1 @@
-king.o: king.cc king.h piece.h coordinate.h
+king.o: king.cc king.h board.h coordinate.h piece.h square.h

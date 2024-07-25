@@ -1,1 +1,1 @@
-queen.o: queen.cc queen.h piece.h coordinate.h
+queen.o: queen.cc queen.h board.h coordinate.h piece.h square.h

@@ -1,19 +1,19 @@
 #include "square.h"
 
-Square::Square() : piece(nullptr) {}
+Square::Square() : p(nullptr) {}
 
 bool Square::isOccupied() const {
-    return piece != nullptr;
+    return p != nullptr;
 }
 
 Piece* Square::getPiece() const {
-    return piece;
+    return p;
 }
 
-void Square::setPiece(Piece* piece) {
-    this->piece = piece;
+void Square::setPiece(Piece* p) {
+    this->p = p;
 }
 
 void Square::removePiece() {
-    piece = nullptr;
+    p = nullptr;
 }

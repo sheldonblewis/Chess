@@ -6,7 +6,7 @@
 class Pawn : public Piece {
 public:
     Pawn(char color, Coordinate position);
-    bool validateMove(Coordinate start, Coordinate end) const override;
+    bool validateMove(Coordinate start, Coordinate end, const Board& board) const override;
     void promote(Piece* newPiece);
     char getSymbol() const override;
 };

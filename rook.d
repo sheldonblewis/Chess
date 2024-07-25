@@ -1,1 +1,1 @@
-rook.o: rook.cc rook.h piece.h coordinate.h
+rook.o: rook.cc rook.h board.h coordinate.h piece.h square.h

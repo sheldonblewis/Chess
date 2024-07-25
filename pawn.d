@@ -1,1 +1,1 @@
-pawn.o: pawn.cc pawn.h piece.h coordinate.h
+pawn.o: pawn.cc board.h coordinate.h piece.h square.h pawn.h

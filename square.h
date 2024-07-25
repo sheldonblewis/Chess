@@ -5,13 +5,13 @@
 
 class Square {
 private:
-    Piece* piece;
+    Piece* p;
 
 public:
     Square();
     bool isOccupied() const;
     Piece* getPiece() const;
-    void setPiece(Piece* piece);
+    void setPiece(Piece* p);
     void removePiece();
 };
 

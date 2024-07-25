@@ -18,8 +18,8 @@ public:
     bool validateMove(Coordinate start, Coordinate end, const Board& board) const;
     void movePiece(Coordinate start, Coordinate end);
     bool isCheck(char color) const;
-    bool isCheckmate() const;
-    bool isStalemate() const;
+    bool isCheckmate(char color) const;
+    bool isStalemate(char color) const;
     Square& getSquare(Coordinate coord);
     const Square& getSquare(Coordinate coord) const; // read-only
 };

@@ -121,14 +121,82 @@ bool Board::isCheck(char color) const {
     return false;
 }
 
-bool Board::isCheckmate() const {
-    // Add logic to check if any king is in checkmate
-    return false;
+bool Board::isCheckmate(char color) const {
+    // confirm current player's king is in check
+    if (!isCheck(color)) {
+        return false;
+    }
+
+    // iterate through all of current player's pieces
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (squares[i][j].isOccupied()) {
+                Piece* piece = squares[i][j].getPiece();
+                if (piece->getColor() == color) {
+                    // try moving each piece to all possible positions on the board
+                    for (int x = 0; x < 8; ++x) {
+                        for (int y = 0; y < 8; ++y) {
+                            Coordinate start(i, j);
+                            Coordinate end(x, y);
+                            
+                            // ensure move is valid and doesn't leave the King in check
+                            if (piece->validateMove(start, end, *this)) {
+                                // temporarily make the move on a copy of the board
+                                Board tempBoard = *this;
+                                tempBoard.movePiece(start, end);
+
+                                if (!tempBoard.isCheck(color)) {
+                                    return false; // King is no longer in check
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // no escape found
+    return true;
 }
 
-bool Board::isStalemate() const {
-    // Add logic to check if the game is in stalemate
-    return false;
+bool Board::isStalemate(char color) const {
+    // confirm current player's king is not in check
+    if (isCheck(color)) {
+        return false;
+    }
+
+    // iterate through all of current player's pieces
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (squares[i][j].isOccupied()) {
+                Piece* piece = squares[i][j].getPiece();
+                if (piece->getColor() == color) {
+                    // try moving each piece to all possible positions on the board
+                    for (int x = 0; x < 8; ++x) {
+                        for (int y = 0; y < 8; ++y) {
+                            Coordinate start(i, j);
+                            Coordinate end(x, y);
+
+                            // ensure move is valid and doesn't put the King in check
+                            if (piece->validateMove(start, end, *this)) {
+                                // temporarily make the move on a copy of the board
+                                Board tempBoard = *this;
+                                tempBoard.movePiece(start, end);
+
+                                if (!tempBoard.isCheck(color)) {
+                                    return false; // found a legal move
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // no legal moves found
+    return true;
 }
 
 Square& Board::getSquare(Coordinate coord) {

@@ -23,11 +23,11 @@ int main() {
             std::cout << "Invalid move. Try again." << std::endl;
             continue; // if invalid, allow another input
         }
-        if (game.getBoard().isCheckmate()) {
+        if (game.getBoard().isCheckmate(game.getCurrentPlayer()->getColor())) {
             std::cout << "Checkmate! " << (game.getCurrentPlayer()->getColor() == 'W' ? "Black" : "White") << " wins!" << std::endl;
             break;
         }
-        if (game.getBoard().isStalemate()) {
+        if (game.getBoard().isStalemate(game.getCurrentPlayer()->getColor())) {
             std::cout << "Stalemate! The game is a draw." << std::endl;
             break;
         }

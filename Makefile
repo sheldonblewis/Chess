@@ -1,3 +1,5 @@
+# Template rom A4
+#
 # Universal makefile for single C++ program
 #
 # Use gcc flag -MMD (user) or -MD (user/system) to generate dependencies among source files.
@@ -9,25 +11,25 @@
 
 CXX = g++                    						# compiler
 CXXFLAGS = -std=c++20 -g -Wall -Werror=vla -MMD     # compiler flags
-MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}    	# makefile name
+TARGET = chess                    					# executable name
 
-SOURCES = $(wildcard .cc)            				# source files (.cc)
+SOURCES = $(wildcard *.cc)          				# source files (.cc)
 OBJECTS = ${SOURCES:.cc=.o}            				# object files forming executable
-DEPENDS = ${OBJECTS:.o=.d}            				# substitute ".o" with ".d"
-EXEC = exec                    						# executable name
+DEPS = ${OBJECTS:.o=.d}            					# substitute ".o" with ".d"
 
 ########## Targets ##########
 
-.PHONY : clean                    					# not file names
+all: $(TARGET)
 
-${EXEC} : ${OBJECTS}                				# link step
-	${CXX} ${CXXFLAGS} $^ -o $@        				# additional object files before $^
+${TARGET} : ${OBJECTS}                				# link step, additional object files before $^
+	${CXX} ${CXXFLAGS} -o $@ $^        				
 
-${OBJECTS} : ${MAKEFILE_NAME}            			# OPTIONAL : changes to this file => recompile
+%.o: %.cc											# rule to compile source files into object files
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# make implicitly generates rules to compile C++ files that generate .o files
-
--include ${DEPENDS}                					# include *.d files containing program dependences
+-include ${DEPS}                					# include *.d files containing program dependences
 
 clean :                        						# remove files that can be regenerated
-	rm -f ${DEPENDS} ${OBJECTS} ${EXEC}
+	rm -f ${DEPS} ${OBJECTS} ${TARGET}
+
+.PHONY: all clean                    				# not file names

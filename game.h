@@ -16,7 +16,7 @@ private:
 public:
     Game(std::unique_ptr<Player> white, std::unique_ptr<Player> black);
     void startGame();
-    void resign(std::unique_ptr<Player> player);
+    void resign(Player* player);
     bool move(const std::string& input);
     Board& getBoard();
     Player* getCurrentPlayer();

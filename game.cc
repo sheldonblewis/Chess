@@ -10,7 +10,7 @@ void Game::startGame() {
     std::cout << "Game started. White goes first." << std::endl;
 }
 
-void Game::resign(std::unique_ptr<Player> player) {
+void Game::resign(Player* player) {
     std::cout << (player->getColor() == 'W' ? "White" : "Black") << " resigns." << std::endl;
     std::cout << (player->getColor() == 'W' ? "Black" : "White") << " wins!" << std::endl;
 }

@@ -5,9 +5,9 @@
 #include "humanPlayer.h"
 
 int main() {
-    HumanPlayer white('W');
-    HumanPlayer black('B');
-    Game game(&white, &black);
+    std::unique_ptr<HumanPlayer> white = std::make_unique<HumanPlayer>('W');
+    std::unique_ptr<HumanPlayer> black = std::make_unique<HumanPlayer>('B');
+    Game game(std::move(white), std::move(black));
     game.startGame();
 
     std::string input;

@@ -12,6 +12,8 @@ public:
     int getY() const;
     void setX(int x);
     void setY(int y);
+
+    bool operator==(const Coordinate& other) const;
 };
 
 #endif // COORDINATE_H

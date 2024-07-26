@@ -1,3 +1,6 @@
+#include <iostream>
+#include <string>
+#include <vector>
 #include "board.h"
 #include "king.h"
 #include "queen.h"
@@ -6,9 +9,6 @@
 #include "rook.h"
 #include "pawn.h"
 #include "piece.h"
-#include <iostream>
-#include <vector>
-#include <string>
 
 Board::Board() {
     squares.resize(8, std::vector<Square>(8));
@@ -75,7 +75,7 @@ Board::~Board() {
     }
 }
 
-void Board::display(char currColor) const {
+void Board::display() const {
     // swap display for white and black
     // if (currColor == 'W') {
     //     for (int i = 7; i >= 0; --i) {
@@ -422,4 +422,12 @@ void Board::castle(Coordinate kingStart, Coordinate rookStart) {
         movePiece(kingStart, Coordinate(kingStart.getX(), kingStart.getY() - 2));
         movePiece(rookStart, Coordinate(kingStart.getX(), kingStart.getY() - 1));
     }
+}
+
+void Board::setPiece(Coordinate coord, Piece* piece) {
+    squares[coord.getX()][coord.getY()].setPiece(piece);
+}
+
+void Board::setTurn(char color) {
+    currentTurn = color;
 }

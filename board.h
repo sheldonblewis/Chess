@@ -14,13 +14,15 @@ private:
     Coordinate lastMoveStart;
     Coordinate lastMoveEnd;
 
+    char currentTurn;
+
 public:
     Board();
     Board(const Board& other);
     ~Board();
 
-
-    void display(char currColor) const;
+    const std::vector<std::vector<Square>>& getSquares() const;
+    void display() const;
     void placePiece(Piece* p, Coordinate position);
     void removePiece(Coordinate position);
     bool validateMove(Coordinate start, Coordinate end, char currColor, const Board& board) const;
@@ -30,6 +32,8 @@ public:
     bool isStalemate(char color) const;
     Square& getSquare(Coordinate coord);
     const Square& getSquare(Coordinate coord) const; // read-only
+    void setPiece(Coordinate coord, Piece* piece);
+    void setTurn(char color);
 
     // for castling
     bool canCastle(Coordinate kingStart, Coordinate rookStart, Coordinate kingEnd, Coordinate rookEnd, char kingColor) const;

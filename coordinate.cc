@@ -17,3 +17,7 @@ void Coordinate::setX(int x) {
 void Coordinate::setY(int y) {
     this->y = y;
 }
+
+bool Coordinate::operator==(const Coordinate& other) const {
+    return this->x == other.x && this->y == other.y;
+}

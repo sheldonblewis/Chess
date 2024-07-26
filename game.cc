@@ -38,6 +38,13 @@ bool Game::move(const std::string& input) {
     Coordinate startCoord(startX, startY);
     Coordinate endCoord(endX, endY);
 
+    // check if there is a piece at the starting location
+    Square& startSquare = board.getSquare(startCoord);
+    if (!startSquare.isOccupied()) {
+        std::cout << "No piece at " << start << ". Try again.\n" << std::endl;
+        return false;
+    }
+
     // validate and execute move
     if (board.validateMove(startCoord, endCoord, getCurrentPlayer()->getColor(), board)) {
         // checks if already in check
@@ -60,12 +67,10 @@ bool Game::move(const std::string& input) {
             }
             return false;
         }
-        std::cout << "valid move" << std::endl; // DEBUG
         // execute
         board.movePiece(startCoord, endCoord);
         return true;
     } else {
-        std::cout << "Invalid Move. Try again.\n" << std::endl;
         return false;
     }
 }

@@ -69,9 +69,9 @@ void Board::removePiece(Coordinate position) {
 }
 
 bool Board::validateMove(Coordinate start, Coordinate end, char currColor, const Board& board) const {
-    // move validation logic
     Piece* p = squares[start.getX()][start.getY()].getPiece();
     if (p->getColor() != currColor) {
+        std::cout << "That's not yours buddy, try again.\n" << std::endl;
         return false; // trying to move opponent's piece or no piece at all
     }
     return p->validateMove(start, end, board);

@@ -15,5 +15,5 @@ void Square::setPiece(Piece* p) {
 }
 
 void Square::removePiece() {
-    p = nullptr;
+    this->p = nullptr;
 }

@@ -9,10 +9,12 @@
 class Board {
 private:
     std::vector<std::vector<Square>> squares;
+    Coordinate lastMoveStart;
+    Coordinate lastMoveEnd;
 
 public:
     Board();
-    void display() const;
+    void display(char currColor) const;
     void placePiece(Piece* p, Coordinate position);
     void removePiece(Coordinate position);
     bool validateMove(Coordinate start, Coordinate end, char currColor, const Board& board) const;

@@ -71,6 +71,7 @@ bool Game::move(const std::string& input) {
         board.movePiece(startCoord, endCoord);
         return true;
     } else {
+        std::cout << "Invalid move. Try again\n" << std::endl;
         return false;
     }
 }

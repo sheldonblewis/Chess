@@ -40,7 +40,43 @@ Board::Board() {
     }
 }
 
-void Board::display() const {
+void Board::display(char currColor) const {
+    // swap display for white and black
+    // if (currColor == 'W') {
+    //     for (int i = 7; i >= 0; --i) {
+    //         std::cout << (i + 1) << " ";
+    //         for (int j = 0; j < 8; ++j) {
+    //             if (squares[i][j].isOccupied()) {
+    //                 std::cout << squares[i][j].getPiece()->getSymbol();
+    //             } else {
+    //                 // determine square color
+    //                 if ((i + j) % 2 == 1) {
+    //                     std::cout << " "; // empty white squares
+    //                 } else {
+    //                     std::cout << "_"; // empty black squares
+    //                 }
+    //             }
+    //         }
+    //         std::cout << std::endl;
+    //     }
+    // } else if (currColor == 'B') {
+    //     for (int i = 0; i <= 7; ++i) {
+    //         std::cout << (i + 1) << " ";
+    //         for (int j = 0; j < 8; ++j) {
+    //             if (squares[i][j].isOccupied()) {
+    //                 std::cout << squares[i][j].getPiece()->getSymbol();
+    //             } else {
+    //                 // determine square color
+    //                 if ((i + j) % 2 == 1) {
+    //                     std::cout << " "; // empty white squares
+    //                 } else {
+    //                     std::cout << "_"; // empty black squares
+    //                 }
+    //             }
+    //         }
+    //         std::cout << std::endl;
+    //     }
+    // }
     for (int i = 7; i >= 0; --i) {
         std::cout << (i + 1) << " ";
         for (int j = 0; j < 8; ++j) {
@@ -57,7 +93,7 @@ void Board::display() const {
         }
         std::cout << std::endl;
     }
-    std::cout << "  abcdefgh" << std::endl;
+    std::cout << "\n  abcdefgh" << std::endl;
 }
 
 void Board::placePiece(Piece* p, Coordinate position) {
@@ -71,18 +107,43 @@ void Board::removePiece(Coordinate position) {
 bool Board::validateMove(Coordinate start, Coordinate end, char currColor, const Board& board) const {
     Piece* p = squares[start.getX()][start.getY()].getPiece();
     if (p->getColor() != currColor) {
-        std::cout << "That's not yours buddy, try again.\n" << std::endl;
+        std::cout << "HEY. Hands off your opponent's piece." << std::endl;
         return false; // trying to move opponent's piece or no piece at all
     }
+
+    // check for en passant possibility
+    if (dynamic_cast<Pawn*>(p)) {
+        if (start.getX() == lastMoveEnd.getX() && std::abs(start.getY() - end.getY()) == 1 && start.getX() == (currColor == 'W' ? 4 : 3)) {
+            Piece* lastMovedPiece = squares[lastMoveEnd.getX()][lastMoveEnd.getY()].getPiece();
+            if (lastMovedPiece && dynamic_cast<Pawn*>(lastMovedPiece) && lastMovedPiece->getColor() != currColor) {
+                if (lastMoveEnd.getX() - lastMoveStart.getX() == 2 || lastMoveEnd.getX() - lastMoveStart.getX() == -2) {
+                    return true; // en passant is valid
+                }
+            }
+        }
+    }
+
     return p->validateMove(start, end, board);
 }
 
 void Board::movePiece(Coordinate start, Coordinate end) {
     Piece* p = squares[start.getX()][start.getY()].getPiece();
     if (p) {
+        // en passant capture
+        if (dynamic_cast<Pawn*>(p) && start.getX() != end.getX() && !squares[end.getX()][end.getY()].isOccupied()) {
+            int captureX = start.getX();
+            int captureY = end.getY();
+            removePiece(Coordinate(captureX, captureY));
+        }
+
+        // normal move
         removePiece(start); // clear piece from start square
         p->setPosition(end); // update pos in 2D-vector
         placePiece(p, end); // place piece in end square
+
+        // track last move for en passant
+        lastMoveStart = start;
+        lastMoveEnd = end;
     }
 }
 

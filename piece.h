@@ -7,8 +7,8 @@ class Board;
 
 class Piece {
 protected:
-    Coordinate position;
     char color; // 'W' for white, 'B' for black
+    Coordinate position;
 
 public:
     Piece(char color, Coordinate position);

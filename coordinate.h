@@ -6,6 +6,7 @@ private:
     int x, y;
 
 public:
+    Coordinate() : x(-1), y(-1) {}
     Coordinate(int x, int y);
     int getX() const;
     int getY() const;

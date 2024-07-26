@@ -12,7 +12,7 @@ int main() {
 
     std::string input;
     while (true) {
-        game.getBoard().display();
+        game.getBoard().display(game.getCurrentPlayer()->getColor());
         std::cout << "\n" << (game.getCurrentPlayer()->getColor() == 'W' ? "White" : "Black") << "'s turn: ";
         std::getline(std::cin, input);
         if (input == "resign") {
@@ -33,7 +33,7 @@ int main() {
 
             if (board.isCheckmate(currColor)) {
                 std::cout << "Checkmate! " << (currColor == 'W' ? "Black" : "White") << " wins!\n" << std::endl;
-                game.getBoard().display();
+                game.getBoard().display(currColor);
                 break;
             } else {
                 std::cout << std::endl;
@@ -41,7 +41,7 @@ int main() {
         }
         else if (board.isStalemate(currColor)) {
             std::cout << "Stalemate!\n" << std::endl;
-            game.getBoard().display();
+            game.getBoard().display(currColor);
             break;
         }
 

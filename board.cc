@@ -7,6 +7,7 @@
 #include "pawn.h"
 #include <iostream>
 #include <vector>
+#include <string>
 
 Board::Board() {
     squares.resize(8, std::vector<Square>(8));
@@ -156,6 +157,29 @@ void Board::movePiece(Coordinate start, Coordinate end) {
         // track last move for en passant
         lastMoveStart = start;
         lastMoveEnd = end;
+
+        // check for pawn promotion
+        if (dynamic_cast<Pawn*>(p) && (end.getX() == 0 || end.getX() == 7)) { // if either back row is reached that means promotion since pawns can't move backward
+            std::string promotionChoice;
+            std::cout << "Pawn promotion! Choose a piece by typing a CAPITAL letter, and confirming your choice (Q, R, B, N): ";
+            std::getline(std::cin, promotionChoice);
+
+            Piece* promotedPiece = nullptr;
+            switch (promotionChoice[0]) {
+                case 'Q': promotedPiece = new Queen(p->getColor(), end); break;
+                case 'R': promotedPiece = new Rook(p->getColor(), end); break;
+                case 'B': promotedPiece = new Bishop(p->getColor(), end); break;
+                case 'N': promotedPiece = new Knight(p->getColor(), end); break;
+                default:
+                    std::cout << "Invalid choice. Defaulting to Queen." << std::endl;
+                    promotedPiece = new Queen(p->getColor(), end);
+            }
+
+            removePiece(end); // Remove the pawn
+            placePiece(promotedPiece, end); // Place the new piece
+
+            std::cin.clear();
+        }
     }
 }
 

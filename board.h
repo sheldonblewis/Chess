@@ -20,7 +20,7 @@ public:
     void placePiece(Piece* p, Coordinate position);
     void removePiece(Coordinate position);
     bool validateMove(Coordinate start, Coordinate end, char currColor, const Board& board) const;
-    void movePiece(Coordinate start, Coordinate end);
+    void movePiece(Coordinate start, Coordinate end, char PromotionPiece = '\0');
     bool isCheck(char color) const;
     bool isCheckmate(char color) const;
     bool isStalemate(char color) const;

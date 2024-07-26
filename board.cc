@@ -127,8 +127,6 @@ bool Board::validateMove(Coordinate start, Coordinate end, char currColor, const
     // check for castling
     if (dynamic_cast<King*>(p) && std::abs(end.getY() - start.getY()) == 2) {
         Coordinate rookStart = (end.getY() > start.getY()) ? Coordinate(start.getX(), 7) : Coordinate(start.getX(), 0);
-        // Coordinate kingEnd = end;
-        // Coordinate rookEnd = (end.getY() > start.getY()) ? Coordinate(start.getX(), end.getY() - 1) : Coordinate(start.getX(), end.getY() + 1);
         if (canCastle(start, rookStart, end, (end.getY() > start.getY()) ? Coordinate(start.getX(), end.getY() - 1) : Coordinate(start.getX(), end.getY() + 1), currColor)) {
             return true;
         }
@@ -137,7 +135,7 @@ bool Board::validateMove(Coordinate start, Coordinate end, char currColor, const
     return p->validateMove(start, end, board);
 }
 
-void Board::movePiece(Coordinate start, Coordinate end) {
+void Board::movePiece(Coordinate start, Coordinate end, char promotionPiece) {
     Piece* p = squares[start.getX()][start.getY()].getPiece();
     if (p) {
         // en passant capture
@@ -150,33 +148,38 @@ void Board::movePiece(Coordinate start, Coordinate end) {
         // normal move
         removePiece(start); // clear piece from start square
         p->setPosition(end); // update pos in 2D-vector
-        placePiece(p, end); // place piece in end square
 
         // track last move for en passant
         lastMoveStart = start;
         lastMoveEnd = end;
 
-        // check for pawn promotion
-        if (dynamic_cast<Pawn*>(p) && (end.getX() == 0 || end.getX() == 7)) { // if either back row is reached that means promotion since pawns can't move backward
-            std::string promotionChoice;
-            std::cout << "Pawn promotion! Choose a piece by typing a CAPITAL letter, and confirming your choice (Q, R, B, N): ";
-            std::getline(std::cin, promotionChoice);
-
+        // pawn promotion
+        if (dynamic_cast<Pawn*>(p) && (end.getX() == 0 || end.getX() == 7)) {
             Piece* promotedPiece = nullptr;
-            switch (promotionChoice[0]) {
-                case 'Q': promotedPiece = new Queen(p->getColor(), end); break;
-                case 'R': promotedPiece = new Rook(p->getColor(), end); break;
-                case 'B': promotedPiece = new Bishop(p->getColor(), end); break;
-                case 'N': promotedPiece = new Knight(p->getColor(), end); break;
-                default:
-                    std::cout << "Invalid choice. Defaulting to Queen." << std::endl;
+            switch (promotionPiece) {
+                case 'Q':
+                    std::cout << "Promoting pawn to Queen." << std::endl;
                     promotedPiece = new Queen(p->getColor(), end);
+                    break;
+                case 'R':
+                    std::cout << "Promoting pawn to rook." << std::endl;
+                    promotedPiece = new Rook(p->getColor(), end);
+                    break;
+                case 'B':
+                    std::cout << "Promoting pawn to bishop." << std::endl;
+                    promotedPiece = new Bishop(p->getColor(), end);
+                    break;
+                case 'N':
+                    std::cout << "Promoting pawn to knight." << std::endl;
+                    promotedPiece = new Knight(p->getColor(), end);
+                    break;
+                default:
+                    promotedPiece = new Queen(p->getColor(), end);
+                    break;
             }
-
-            removePiece(end); // Remove the pawn
-            placePiece(promotedPiece, end); // Place the new piece
-
-            std::cin.clear();
+            placePiece(promotedPiece, end);
+        } else {
+            placePiece(p, end);
         }
 
         // castling

@@ -16,8 +16,8 @@ void Game::resign(Player* player) {
 
 bool Game::move(const std::string& input) {
     std::istringstream iss(input);
-    std::string command, start, end;
-    iss >> command >> start >> end;
+    std::string command, start, end, promotionChoice;
+    iss >> command >> start >> end >> promotionChoice;
 
     if (command != "move" || start.length() != 2 || end.length() != 2) {
         std::cout << "Invalid input format. Please use 'move <start> <end>'." << std::endl;
@@ -45,6 +45,12 @@ bool Game::move(const std::string& input) {
         return false;
     }
 
+    // determine promotion piece if any
+    char promotionPiece = '\0';
+    if (promotionChoice.length() == 1) {
+        promotionPiece = promotionChoice[0];
+    }
+
     // validate and execute move
     if (board.validateMove(startCoord, endCoord, getCurrentPlayer()->getColor(), board)) {
         // checks if already in check
@@ -68,7 +74,7 @@ bool Game::move(const std::string& input) {
             return false;
         }
         // execute
-        board.movePiece(startCoord, endCoord);
+        board.movePiece(startCoord, endCoord, promotionPiece);
         return true;
     } else {
         std::cout << "Invalid move. Try again\n" << std::endl;

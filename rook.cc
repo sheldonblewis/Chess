@@ -48,3 +48,7 @@ bool Rook::validateMove(Coordinate start, Coordinate end, const Board& board) co
 char Rook::getSymbol() const {
     return color == 'W' ? 'R' : 'r';
 }
+
+Piece* Rook::clone() const {
+    return new Rook(*this);
+}

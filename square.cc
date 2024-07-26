@@ -1,3 +1,4 @@
+#include <iostream>
 #include "square.h"
 
 Square::Square() : p(nullptr) {}

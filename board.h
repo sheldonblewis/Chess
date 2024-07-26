@@ -16,6 +16,10 @@ private:
 
 public:
     Board();
+    Board(const Board& other);
+    ~Board();
+
+
     void display(char currColor) const;
     void placePiece(Piece* p, Coordinate position);
     void removePiece(Coordinate position);

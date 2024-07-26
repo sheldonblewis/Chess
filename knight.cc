@@ -31,3 +31,7 @@ bool Knight::validateMove(Coordinate start, Coordinate end, const Board& board) 
 char Knight::getSymbol() const {
     return color == 'W' ? 'N' : 'n';
 }
+
+Piece* Knight::clone() const {
+    return new Knight(*this);
+}

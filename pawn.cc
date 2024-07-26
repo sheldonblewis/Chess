@@ -44,3 +44,7 @@ void Pawn::promote(Piece* newPiece) {
 char Pawn::getSymbol() const {
     return color == 'W' ? 'P' : 'p';
 }
+
+Piece* Pawn::clone() const {
+    return new Pawn(*this);
+}

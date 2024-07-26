@@ -1,9 +1,11 @@
+#include <iostream>
 #include "bishop.h"
 #include "board.h"
 
 Bishop::Bishop(char color, Coordinate position) : Piece(color, position) {}
 
 bool Bishop::validateMove(Coordinate start, Coordinate end, const Board& board) const {
+    
     int dx = abs(end.getX() - start.getX());
     int dy = abs(end.getY() - start.getY());
 
@@ -37,4 +39,8 @@ bool Bishop::validateMove(Coordinate start, Coordinate end, const Board& board) 
 
 char Bishop::getSymbol() const {
     return color == 'W' ? 'B' : 'b';
+}
+
+Piece* Bishop::clone() const {
+    return new Bishop(*this);
 }

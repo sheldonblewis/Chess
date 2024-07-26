@@ -9,6 +9,8 @@ public:
     bool validateMove(Coordinate start, Coordinate end, const Board& board) const override;
     void promote(Piece* newPiece);
     char getSymbol() const override;
+
+    Piece* clone() const override;
 };
 
 #endif // PAWN_H

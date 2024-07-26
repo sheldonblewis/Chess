@@ -10,6 +10,8 @@ private:
     int difficultyLevel;
     std::mt19937 rng; // RNG
     std::vector<std::pair<Coordinate, Coordinate>> getLegalMoves(const Board& board);
+    std::vector<std::pair<Coordinate, Coordinate>> getCapturingMoves(const std::vector<std::pair<Coordinate, Coordinate>>& legalMoves, const Board& board);
+    std::vector<std::pair<Coordinate, Coordinate>> getCheckingMoves(const std::vector<std::pair<Coordinate, Coordinate>>& legalMoves, const Board& board);
 
 public:
     ComputerPlayer(char color, int level);

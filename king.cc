@@ -32,3 +32,7 @@ bool King::validateMove(Coordinate start, Coordinate end, const Board& board) co
 char King::getSymbol() const {
     return color == 'W' ? 'K' : 'k';
 }
+
+Piece* King::clone() const {
+    return new King(*this);
+}

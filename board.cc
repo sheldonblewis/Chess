@@ -5,6 +5,7 @@
 #include "knight.h"
 #include "rook.h"
 #include "pawn.h"
+#include "piece.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -38,6 +39,39 @@ Board::Board() {
 
     for (int i = 0; i < 8; ++i) {
         squares[6][i].setPiece(new Pawn('B', Coordinate(6, i)));
+    }
+
+    for (int i = 2; i < 6; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            squares[i][j] = Square();
+        }
+    }
+}
+
+Board::Board(const Board& other) {
+    squares.resize(8, std::vector<Square>(8));
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (other.squares[i][j].isOccupied()) {
+                Piece* pieceCopy = other.squares[i][j].getPiece()->clone();
+                squares[i][j].setPiece(pieceCopy);
+            } else {
+                squares[i][j].removePiece();
+            }
+        }
+    }
+    lastMoveStart = other.lastMoveStart;
+    lastMoveEnd = other.lastMoveEnd;
+}
+
+Board::~Board() {
+    for (auto& row : squares) {
+        for (auto& square : row) {
+            if (square.isOccupied()) {
+                delete square.getPiece();
+                square.removePiece();
+            }
+        }
     }
 }
 
@@ -372,7 +406,6 @@ bool Board::canCastle(Coordinate kingStart, Coordinate rookStart, Coordinate kin
     int middle = (kingStart.getX() + kingEnd.getX()) / 2;
     char attackingColor = kingColor == 'W' ? 'B' : 'W';
     if (isUnderAttack(kingStart, attackingColor) || isUnderAttack(Coordinate(middle, kingStart.getY()), attackingColor) || isUnderAttack(kingEnd, attackingColor)) {
-        std::cout << "e" << std::endl; // DEBUG
         return false;
     }
 

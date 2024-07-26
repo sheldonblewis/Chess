@@ -51,3 +51,7 @@ bool Queen::validateMove(Coordinate start, Coordinate end, const Board& board) c
 char Queen::getSymbol() const {
     return color == 'W' ? 'Q' : 'q';
 }
+
+Piece* Queen::clone() const {
+    return new Queen(*this);
+}

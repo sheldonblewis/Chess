@@ -3,9 +3,11 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
 ComputerPlayer::ComputerPlayer(char color, int level) : Player(color), difficultyLevel(level), rng(static_cast<unsigned>(std::time(nullptr))) {}
 
+// level 1+
 std::vector<std::pair<Coordinate, Coordinate>> ComputerPlayer::getLegalMoves(const Board& board) {
     std::vector<std::pair<Coordinate, Coordinate>> legalMoves;
 
@@ -16,6 +18,9 @@ std::vector<std::pair<Coordinate, Coordinate>> ComputerPlayer::getLegalMoves(con
             if (piece && piece->getColor() == getColor()) {
                 for (int x = 0; x < 8; ++x) {
                     for (int y = 0; y < 8; ++y) {
+                        if (i == x && j == y) {
+                            continue;
+                        }
                         Coordinate start(i, j);
                         Coordinate end(x, y);
                         if (board.validateMove(start, end, getColor(), board)) {
@@ -30,15 +35,59 @@ std::vector<std::pair<Coordinate, Coordinate>> ComputerPlayer::getLegalMoves(con
     return legalMoves;
 }
 
+// level 2+
+std::vector<std::pair<Coordinate, Coordinate>> ComputerPlayer::getCapturingMoves(const std::vector<std::pair<Coordinate, Coordinate>>& legalMoves, const Board& board) {
+    std::vector<std::pair<Coordinate, Coordinate>> capturingMoves;
+    for (const auto& move : legalMoves) {
+        Coordinate end = move.second;
+        if (board.getSquare(end).isOccupied() && board.getSquare(end).getPiece()->getColor() != getColor()) { // capture is possible
+            capturingMoves.push_back(move);
+        }
+    }
+    return capturingMoves;
+}
+
+// level 2+
+std::vector<std::pair<Coordinate, Coordinate>> ComputerPlayer::getCheckingMoves(const std::vector<std::pair<Coordinate, Coordinate>>& legalMoves, const Board& board) {
+    std::vector<std::pair<Coordinate, Coordinate>> checkingMoves;
+    for (const auto& move : legalMoves) {
+        Coordinate start = move.first;
+        Coordinate end = move.second;
+        Board tempBoard = board;
+        tempBoard.movePiece(start, end);
+        if (tempBoard.isCheck(getColor() == 'W' ? 'B' : 'W')) { // checks the opponent
+            checkingMoves.push_back(move);
+        }
+    }
+    return checkingMoves;
+}
+
 std::string ComputerPlayer::getMove(const Board& board) {
     auto legalMoves = getLegalMoves(board);
+    auto priorityMoves = legalMoves;
     if (legalMoves.empty()) {
         return "resign"; // no legal moves available
     }
 
-    // choose random legal move
-    std::uniform_int_distribution<size_t> dist(0, legalMoves.size() - 1);
-    auto [start, end] = legalMoves[dist(rng)];
+    if (difficultyLevel > 1) {
+        // prioritize capturing
+        auto capturingMoves = getCapturingMoves(legalMoves, board);
+        if (!capturingMoves.empty()) {
+            priorityMoves = capturingMoves;
+        } else {
+            // prioritize checking (secondary)
+            auto checkingMoves = getCheckingMoves(legalMoves, board);
+            if (!checkingMoves.empty()) {
+                priorityMoves = checkingMoves;
+            }
+        }
+    }
+
+    // choose random move from priority set
+    //    (level 2: capturing -> checking -> legal)
+    //    (level 1: legal)
+    std::uniform_int_distribution<size_t> dist(0, priorityMoves.size() - 1);
+    auto [start, end] = priorityMoves[dist(rng)];
 
     // format move as string
     std::string move = "move ";

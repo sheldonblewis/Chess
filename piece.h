@@ -9,6 +9,7 @@ class Piece {
 protected:
     char color; // 'W' for white, 'B' for black
     Coordinate position;
+    bool hasMoved;
 
 public:
     Piece(char color, Coordinate position);
@@ -18,6 +19,7 @@ public:
     void setPosition(Coordinate newPos);
     char getColor() const;
     virtual char getSymbol() const = 0;
+    bool getHasMoved() const;
 };
 
 #endif // PIECE_H

@@ -13,3 +13,7 @@ void Piece::setPosition(Coordinate newPos) {
 char Piece::getColor() const {
     return color;
 }
+
+bool Piece::getHasMoved() const {
+    return hasMoved;
+}

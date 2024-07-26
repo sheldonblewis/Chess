@@ -104,14 +104,14 @@ void Board::removePiece(Coordinate position) {
     squares[position.getX()][position.getY()].removePiece();
 }
 
-bool Board::validateMove(Coordinate start, Coordinate end, char currColor, const Board& board) const {
+bool Board::validateMove(Coordinate start, Coordinate end, char currColor, Board& board) const {
     Piece* p = squares[start.getX()][start.getY()].getPiece();
     if (p->getColor() != currColor) {
         std::cout << "HEY. Hands off your opponent's piece." << std::endl;
         return false; // trying to move opponent's piece or no piece at all
     }
 
-    // check for en passant possibility
+    // check for en passant
     if (dynamic_cast<Pawn*>(p)) {
         if (start.getX() == lastMoveEnd.getX() && std::abs(start.getY() - end.getY()) == 1 && start.getX() == (currColor == 'W' ? 4 : 3)) {
             Piece* lastMovedPiece = squares[lastMoveEnd.getX()][lastMoveEnd.getY()].getPiece();
@@ -122,6 +122,18 @@ bool Board::validateMove(Coordinate start, Coordinate end, char currColor, const
             }
         }
     }
+
+    // check for castling
+    if (dynamic_cast<King*>(p) && std::abs(end.getY() - start.getY()) == 2) {
+        Coordinate rookStart = (end.getY() > start.getY()) ? Coordinate(start.getX(), 7) : Coordinate(start.getX(), 0);
+        Coordinate kingEnd = end;
+        Coordinate rookEnd = (end.getY() > start.getY()) ? Coordinate(start.getX(), end.getY() - 1) : Coordinate(start.getX(), end.getY() + 1);
+        if (board.canCastle(start, rookStart, kingEnd, rookEnd, currColor)) {
+            board.castle(start, rookStart);
+            return true;
+        }
+    }
+
 
     return p->validateMove(start, end, board);
 }
@@ -273,4 +285,77 @@ Square& Board::getSquare(Coordinate coord) {
 
 const Square& Board::getSquare(Coordinate coord) const {
     return squares[coord.getX()][coord.getY()];
+}
+
+bool Board::isPathClear(Coordinate start, Coordinate end) const {
+    int startX = start.getX();
+    int endX = end.getX();
+    int startY = start.getY();
+    int endY = end.getY();
+
+    if (startX != endX && startY != endY) return false; // not a straight line
+
+    int xDirection = (endX - startX) ? (endX - startX) / std::abs(endX - startX) : 0;
+    int yDirection = (endY - startY) ? (endY - startY) / std::abs(endY - startY) : 0;
+
+    int x = startX + xDirection;
+    int y = startY + yDirection;
+    while (x != endX || y != endY) {
+        if (squares[x][y].isOccupied()) return false;
+        x += xDirection;
+        y += yDirection;
+    }
+
+    return true;
+}
+
+bool Board::isUnderAttack(Coordinate pos, char attackingColor) const {
+    for (const auto& row : squares) {
+        for (const auto& square : row) {
+            if (square.isOccupied() && square.getPiece()->getColor() == attackingColor) {
+                if (square.getPiece()->validateMove(square.getPiece()->getPosition(), pos, *this)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool Board::canCastle(Coordinate kingStart, Coordinate rookStart, Coordinate kingEnd, Coordinate rookEnd, char kingColor) const {
+    Piece* king = squares[kingStart.getX()][kingStart.getY()].getPiece();
+    Piece* rook = squares[rookStart.getX()][rookStart.getY()].getPiece();
+
+    if (!king || !rook) {
+        return false;
+    }
+    if (!dynamic_cast<King*>(king) || !dynamic_cast<Rook*>(rook)) {
+        return false;
+    }
+    if (king->getHasMoved() || rook->getHasMoved()) {
+        return false;
+    }
+    if (!isPathClear(kingStart, rookStart)) {
+        return false;
+    }
+    int middle = (kingStart.getX() + kingEnd.getX()) / 2;
+    char attackingColor = kingColor == 'W' ? 'B' : 'W';
+    if (isUnderAttack(kingStart, attackingColor) || isUnderAttack(Coordinate(middle, kingStart.getY()), attackingColor) || isUnderAttack(kingEnd, attackingColor)) {
+        std::cout << "e" << std::endl; // DEBUG
+        return false;
+    }
+
+    return true;
+}
+
+void Board::castle(Coordinate kingStart, Coordinate rookStart) {
+    if (kingStart.getY() < rookStart.getY()) {
+        // kingside castling
+        movePiece(kingStart, Coordinate(kingStart.getX(), kingStart.getY() + 2));
+        movePiece(rookStart, Coordinate(kingStart.getX(), kingStart.getY() + 1));
+    } else {
+        // queenside castling
+        movePiece(kingStart, Coordinate(kingStart.getX(), kingStart.getY() - 2));
+        movePiece(rookStart, Coordinate(kingStart.getX(), kingStart.getY() - 1));
+    }
 }

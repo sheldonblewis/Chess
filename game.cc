@@ -74,6 +74,7 @@ bool Game::move(const std::string& input) {
             return false;
         }
 
+        // add to jail
         Coordinate endCoord = this->parseCoordinate(end);
         if (board.getSquare(endCoord).isOccupied()) {
             Piece* capturedPiece = board.getSquare(endCoord).getPiece();
@@ -114,6 +115,7 @@ Coordinate Game::parseCoordinate(std::string squareStr) {
     return Coordinate(x, y);
 }
 
+// display with jail
 void Game::displayBoard() const {
     std::cout << blackCaptured << "\n" << std::endl;
     board.display();

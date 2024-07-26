@@ -112,6 +112,7 @@ void Board::display() const {
     //         std::cout << std::endl;
     //     }
     // }
+
     for (int i = 7; i >= 0; --i) {
         std::cout << (i + 1) << " ";
         for (int j = 0; j < 8; ++j) {

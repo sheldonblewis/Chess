@@ -3,7 +3,7 @@
 #include <sstream>
 #include <memory>
 
-Game::Game(std::unique_ptr<Player> white, std::unique_ptr<Player> black) : whitePlayer(std::move(white)), blackPlayer(std::move(black)), currentPlayer(whitePlayer.get()) {}
+Game::Game(std::unique_ptr<Player> white, std::unique_ptr<Player> black) : whitePlayer(std::move(white)), blackPlayer(std::move(black)), currentPlayer(whitePlayer.get()), whiteCaptured(""), blackCaptured("") {}
 
 void Game::startGame() {
     // begin game
@@ -73,6 +73,20 @@ bool Game::move(const std::string& input) {
             }
             return false;
         }
+
+        Coordinate endCoord = this->parseCoordinate(end);
+        if (board.getSquare(endCoord).isOccupied()) {
+            Piece* capturedPiece = board.getSquare(endCoord).getPiece();
+            
+            if (capturedPiece != nullptr) {
+                if (capturedPiece->getColor() == 'W') {
+                    blackCaptured += capturedPiece->getSymbol(); // captured by black
+                } else {
+                    whiteCaptured += capturedPiece->getSymbol(); // captured by white
+                }
+            }
+        }
+
         // execute
         board.movePiece(startCoord, endCoord, promotionPiece);
         return true;
@@ -92,4 +106,16 @@ Player* Game::getCurrentPlayer() const {
 
 void Game::switchPlayer() {
     currentPlayer = (currentPlayer == whitePlayer.get()) ? blackPlayer.get() : whitePlayer.get();
+}
+
+Coordinate Game::parseCoordinate(std::string squareStr) {
+    int x = squareStr[1] - '1'; // convert '1'-'8' to 0-7
+    int y = squareStr[0] - 'a'; // convert 'a'-'h' to 0-7
+    return Coordinate(x, y);
+}
+
+void Game::displayBoard() const {
+    std::cout << blackCaptured << "\n" << std::endl;
+    board.display();
+    std::cout << "\n" << whiteCaptured << std::endl;
 }

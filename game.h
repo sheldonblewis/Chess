@@ -13,6 +13,9 @@ private:
     std::unique_ptr<Player> blackPlayer;
     Player* currentPlayer;
 
+    std::string whiteCaptured;
+    std::string blackCaptured;
+
 public:
     Game(std::unique_ptr<Player> white, std::unique_ptr<Player> black);
     void startGame();
@@ -21,6 +24,8 @@ public:
     Board& getBoard();
     Player* getCurrentPlayer() const;
     void switchPlayer();
+    Coordinate parseCoordinate(std::string squareStr);
+    void displayBoard() const;
 };
 
 #endif // GAME_H

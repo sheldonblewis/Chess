@@ -75,7 +75,7 @@ int main() {
         game.startGame();
 
         while (true) {
-            game.getBoard().display();
+            game.displayBoard();
             std::cout << "\n" << (game.getCurrentPlayer()->getColor() == 'W' ? "White" : "Black") << "'s turn: ";
             std::getline(std::cin, input);
             if (input == "resign") {

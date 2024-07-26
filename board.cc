@@ -105,7 +105,7 @@ void Board::removePiece(Coordinate position) {
     squares[position.getX()][position.getY()].removePiece();
 }
 
-bool Board::validateMove(Coordinate start, Coordinate end, char currColor, Board& board) const {
+bool Board::validateMove(Coordinate start, Coordinate end, char currColor, const Board& board) const {
     Piece* p = squares[start.getX()][start.getY()].getPiece();
     if (p->getColor() != currColor) {
         std::cout << "HEY. Hands off your opponent's piece." << std::endl;
@@ -127,14 +127,12 @@ bool Board::validateMove(Coordinate start, Coordinate end, char currColor, Board
     // check for castling
     if (dynamic_cast<King*>(p) && std::abs(end.getY() - start.getY()) == 2) {
         Coordinate rookStart = (end.getY() > start.getY()) ? Coordinate(start.getX(), 7) : Coordinate(start.getX(), 0);
-        Coordinate kingEnd = end;
-        Coordinate rookEnd = (end.getY() > start.getY()) ? Coordinate(start.getX(), end.getY() - 1) : Coordinate(start.getX(), end.getY() + 1);
-        if (board.canCastle(start, rookStart, kingEnd, rookEnd, currColor)) {
-            board.castle(start, rookStart);
+        // Coordinate kingEnd = end;
+        // Coordinate rookEnd = (end.getY() > start.getY()) ? Coordinate(start.getX(), end.getY() - 1) : Coordinate(start.getX(), end.getY() + 1);
+        if (canCastle(start, rookStart, end, (end.getY() > start.getY()) ? Coordinate(start.getX(), end.getY() - 1) : Coordinate(start.getX(), end.getY() + 1), currColor)) {
             return true;
         }
     }
-
 
     return p->validateMove(start, end, board);
 }
@@ -179,6 +177,12 @@ void Board::movePiece(Coordinate start, Coordinate end) {
             placePiece(promotedPiece, end); // Place the new piece
 
             std::cin.clear();
+        }
+
+        // castling
+        if (dynamic_cast<King*>(p) && std::abs(end.getY() - start.getY()) == 2) {
+            Coordinate rookStart = (end.getY() > start.getY()) ? Coordinate(start.getX(), 7) : Coordinate(start.getX(), 0);
+            castle(start, rookStart);
         }
     }
 }

@@ -7,7 +7,7 @@ Game::Game(std::unique_ptr<Player> white, std::unique_ptr<Player> black) : white
 
 void Game::startGame() {
     // begin game
-    std::cout << "\nGame started. White goes first.\n" << std::endl;
+    std::cout << "Game started. White goes first.\n" << std::endl;
 }
 
 void Game::resign(Player* player) {

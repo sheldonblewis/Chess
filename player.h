@@ -1,7 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "board.h"
 #include "coordinate.h"
+#include <string>
 
 class Player {
 protected:
@@ -10,8 +12,8 @@ protected:
 public:
     Player(char color);
     virtual ~Player() = default;
-    virtual void makeMove(Coordinate start, Coordinate end) = 0;
     char getColor() const;
+    virtual std::string getMove(const Board& board) = 0;
 };
 
 #endif // PLAYER_H

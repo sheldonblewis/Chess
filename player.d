@@ -1,1 +1,1 @@
-player.o: player.cc player.h coordinate.h
+player.o: player.cc player.h board.h coordinate.h piece.h square.h

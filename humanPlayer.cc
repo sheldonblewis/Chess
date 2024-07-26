@@ -1,7 +1,15 @@
 #include "humanPlayer.h"
+#include <iostream>
 
 HumanPlayer::HumanPlayer(char color) : Player(color) {}
 
-void HumanPlayer::makeMove(Coordinate start, Coordinate end) {
-    // Implement human move logic
+std::string HumanPlayer::getMove(const Board& board) {
+    std::string move;
+    std::cout << "Enter your move: ";
+    std::getline(std::cin, move);
+    return move;
+}
+
+char HumanPlayer::getColor() const {
+    return this->color;
 }

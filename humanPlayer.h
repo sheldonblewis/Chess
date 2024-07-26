@@ -6,7 +6,9 @@
 class HumanPlayer : public Player {
 public:
     HumanPlayer(char color);
-    void makeMove(Coordinate start, Coordinate end) override;
+    ~HumanPlayer() override = default;
+    std::string getMove(const Board& board) override;
+    char getColor() const;
 };
 
 #endif // HUMAN_PLAYER_H

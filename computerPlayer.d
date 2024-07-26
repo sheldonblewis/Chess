@@ -1,2 +1,2 @@
-computerPlayer.o: computerPlayer.cc computerPlayer.h player.h \
- coordinate.h
+computerPlayer.o: computerPlayer.cc computerPlayer.h board.h coordinate.h \
+ piece.h square.h player.h
